@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import AdSenseScript from './components/AdSenseScript';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import AddToFavorites from './components/AddToFavorites';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
@@ -78,11 +79,14 @@ export default function RootLayout({
         <AdSenseScript />
         <header className="bg-white border-b-2 border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* 로고 - 가운데 정렬 */}
-            <div className="py-3 flex justify-center">
+            {/* 로고 - 가운데 정렬, 우측에 즐겨찾기 버튼 */}
+            <div className="py-3 flex justify-center items-center relative">
               <a href="/" className="inline-block">
                 <Image src="/logo.png" alt="투표넷" width={200} height={48} className="h-10 w-auto" priority />
               </a>
+              <div className="absolute right-0">
+                <AddToFavorites />
+              </div>
             </div>
             
             {/* 카테고리 네비게이션 - 가운데 정렬, 모바일 스크롤 가능 */}

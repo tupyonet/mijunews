@@ -301,7 +301,7 @@ async function getCategoryStats() {
 function selectCategoryByRatio(stats) {
   // 목표 비율 (정치:경제:부동산:증권:코인:연예:스포츠:IT:과학:건강:세계 = 4:4:1:2:4:1:1:1:0.5:1:1)
   const targetRatios = {
-    정치: 4,
+    정치: 8,
     경제: 4,
     부동산: 1,
     증권: 2,
@@ -310,7 +310,7 @@ function selectCategoryByRatio(stats) {
     스포츠: 1,
     IT: 1,
     과학: 0.5,
-    건강: 1,
+    건강: 4,
     세계: 1,
   };
   

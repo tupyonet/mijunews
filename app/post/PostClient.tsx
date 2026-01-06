@@ -84,6 +84,19 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
   const [hasVoted, setHasVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  // 주소 복사하기
+  const handleCopyUrl = async () => {
+    try {
+      const url = `https://tupyo-net.web.app/post?id=${postId}`;
+      await navigator.clipboard.writeText(url);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (error) {
+      console.error('주소 복사 실패:', error);
+    }
+  };
 
   // 동적으로 메타 태그 업데이트
   useEffect(() => {
@@ -387,21 +400,51 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
           </h1>
 
           {/* 날짜 및 조회수 */}
-          <div className="flex items-center gap-6 text-gray-600 mb-8 pb-8 border-b">
-            <time dateTime={post.createdAt} className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              {formatDate(post.createdAt)}
-            </time>
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              {post.views} views
-            </span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-6 text-gray-600">
+              <time dateTime={post.createdAt} className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {formatDate(post.createdAt)}
+              </time>
+              <span className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                {post.views} views
+              </span>
+            </div>
+            
+            {/* 주소 복사하기 버튼 */}
+            <button
+              onClick={handleCopyUrl}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
+                copySuccess
+                  ? 'bg-green-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {copySuccess ? (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  복사완료!
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  주소 복사
+                </>
+              )}
+            </button>
           </div>
+
+          <div className="mb-8 pb-8 border-b"></div>
 
           {/* 본문 */}
           <div 
@@ -493,6 +536,34 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
             ) : (
               <p className="text-sm text-gray-500">첫 번째 투표를 해주세요!</p>
             )}
+          </div>
+
+          {/* 주소 복사하기 버튼 (하단) */}
+          <div className="mt-12 pt-8 border-t flex justify-center">
+            <button
+              onClick={handleCopyUrl}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition ${
+                copySuccess
+                  ? 'bg-green-500 text-white'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {copySuccess ? (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  복사완료!
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  이 기사 공유하기
+                </>
+              )}
+            </button>
           </div>
 
           {/* 관련 기사 */}
