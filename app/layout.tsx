@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import AdSenseScript from './components/AdSenseScript';
+import GoogleAnalytics from './components/GoogleAnalytics';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
@@ -73,6 +74,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="antialiased bg-gray-50">
+        <GoogleAnalytics />
         <AdSenseScript />
         <header className="bg-white border-b-2 border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
