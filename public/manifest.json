@@ -1,0 +1,25 @@
+{
+  "name": "투표넷 - 뉴스 너머, 사람들의 진짜 목소리",
+  "short_name": "투표넷",
+  "description": "정치, 경제, 연예, 스포츠, 과학, 건강, 세계, IT 등 모든 주제의 뉴스와 사람들의 의견",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
+

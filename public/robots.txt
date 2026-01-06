@@ -1,0 +1,14 @@
+# robots.txt for tupyo-net.web.app
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://tupyo-net.web.app/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Disallow admin areas if any
+Disallow: /api/
+
