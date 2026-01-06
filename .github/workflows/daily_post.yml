@@ -1,9 +1,9 @@
-name: Hourly RSS News Processing
+name: RSS News Processing Every 14 Minutes
 
 on:
-  # 매 1시간마다 실행 (정각)
+  # 매 14분마다 실행 (0, 14, 28, 42, 56분)
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/14 * * * *'
   
   # 수동 실행 가능
   workflow_dispatch:
