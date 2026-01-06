@@ -1,9 +1,9 @@
-name: RSS News Processing Every 14 Minutes
+name: RSS News Processing Every 30 Minutes
 
 on:
-  # 매 14분마다 실행 (0, 14, 28, 42, 56분)
+  # 매 30분마다 실행 (0, 30분) - GitHub Actions가 안정적으로 실행할 수 있는 간격
   schedule:
-    - cron: '*/14 * * * *'
+    - cron: '*/30 * * * *'
   
   # 수동 실행 가능
   workflow_dispatch:
