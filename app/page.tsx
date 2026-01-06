@@ -89,10 +89,10 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="text-center mb-16">
         <h1 className="text-5xl font-bold text-gray-900 mb-4">
-          AI가 만드는 테크 미디어
+          테크 미디어
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          매일 Google Gemini AI가 생성하는 최신 IT/테크 뉴스와 인사이트를 만나보세요
+          최신 IT/테크 뉴스와 인사이트를 만나보세요
         </p>
       </div>
 
@@ -100,7 +100,7 @@ export default function HomePage() {
       {posts.length === 0 ? (
         <div className="text-center py-20">
           <p className="text-gray-500 text-lg">
-            아직 포스트가 없습니다. 곧 AI가 생성한 콘텐츠를 만나보실 수 있습니다!
+            아직 포스트가 없습니다. 곧 새로운 콘텐츠를 만나보실 수 있습니다!
           </p>
         </div>
       ) : (

@@ -232,15 +232,6 @@ export default function PostPage() {
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
 
-          {/* AI 생성 안내 */}
-          <div className="mt-12 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <strong>ℹ️ AI 생성 콘텐츠</strong>
-              <br />
-              이 글은 Google Gemini AI에 의해 자동으로 생성되었습니다.
-              내용의 정확성을 위해 추가 검증이 필요할 수 있습니다.
-            </p>
-          </div>
         </div>
       </article>
     </div>
