@@ -1,6 +1,6 @@
 'use client';
 
-import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -83,6 +83,7 @@ export default function PostPage() {
   const [loading, setLoading] = useState(true);
   const [hasVoted, setHasVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
+  const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     if (!id) {
@@ -126,11 +127,37 @@ export default function PostPage() {
         } as Post;
         
         setPost(postData);
+        
+        // 관련 기사 가져오기 (최신 20개 중 랜덤 3개)
+        fetchRelatedPosts(id);
       } catch (error) {
         console.error('포스트 가져오기 실패:', error);
         setPost(null);
       } finally {
         setLoading(false);
+      }
+    }
+
+    async function fetchRelatedPosts(currentPostId: string) {
+      try {
+        const postsRef = collection(db, 'posts');
+        const q = query(postsRef, orderBy('createdAt', 'desc'), limit(20));
+        const snapshot = await getDocs(q);
+        
+        const posts: Post[] = snapshot.docs
+          .filter(doc => doc.id !== currentPostId) // 현재 포스트 제외
+          .map(doc => ({
+            id: doc.id,
+            likes: 0,
+            dislikes: 0,
+            ...doc.data()
+          } as Post));
+        
+        // 랜덤하게 3개 선택
+        const shuffled = posts.sort(() => 0.5 - Math.random());
+        setRelatedPosts(shuffled.slice(0, 3));
+      } catch (error) {
+        console.error('관련 기사 가져오기 실패:', error);
       }
     }
 
@@ -450,6 +477,34 @@ export default function PostPage() {
               <p className="text-sm text-gray-500">첫 번째 투표를 해주세요!</p>
             )}
           </div>
+
+          {/* 관련 기사 */}
+          {relatedPosts.length > 0 && (
+            <div className="mt-12 pt-8 border-t">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">다른 기사 보기</h3>
+              <ul className="space-y-3">
+                {relatedPosts.map((relatedPost) => (
+                  <li key={relatedPost.id}>
+                    <Link
+                      href={`/post?id=${relatedPost.id}`}
+                      className="block p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition group"
+                    >
+                      <div className="flex items-start gap-3">
+                        {relatedPost.category && (
+                          <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded font-semibold whitespace-nowrap">
+                            {relatedPost.category}
+                          </span>
+                        )}
+                        <span className="text-gray-900 group-hover:text-blue-600 font-medium transition">
+                          {relatedPost.title}
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* AdSense - Post Bottom */}
           <AdSense
