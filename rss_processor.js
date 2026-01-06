@@ -4,12 +4,31 @@ import Parser from 'rss-parser';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from 'pexels';
 import fetch from 'node-fetch';
-import { adminDb, adminStorage } from './firebase-admin.js';
+import admin, { adminDb, adminStorage } from './firebase-admin.js';
+import { TwitterApi } from 'twitter-api-v2';
 
 // API 초기화
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const pexelsClient = createClient(process.env.PEXELS_API_KEY);
 const parser = new Parser();
+
+// X API 클라이언트 초기화 (환경변수가 있을 때만)
+let xClient = null;
+if (process.env.X_API_KEY && process.env.X_API_SECRET && 
+    process.env.X_ACCESS_TOKEN && process.env.X_ACCESS_SECRET) {
+  xClient = new TwitterApi({
+    appKey: process.env.X_API_KEY,
+    appSecret: process.env.X_API_SECRET,
+    accessToken: process.env.X_ACCESS_TOKEN,
+    accessSecret: process.env.X_ACCESS_SECRET,
+  });
+  console.log('✅ X API 클라이언트 초기화 완료');
+} else {
+  console.log('⚠️ X API 환경변수가 설정되지 않았습니다. X 포스팅 기능이 비활성화됩니다.');
+}
+
+// X 포스팅 대상 카테고리
+const X_POST_CATEGORIES = ['정치', '경제', '코인'];
 
 // RSS 피드 URL 목록 (배열로 변경 - 카테고리별 여러 소스)
 const RSS_FEEDS = {
@@ -353,7 +372,100 @@ async function isDuplicateArticle(title) {
   }
 }
 
-// 9. Firestore에 저장
+// 9. X 포스팅 월별 카운터 조회/업데이트
+async function getXPostCount() {
+  try {
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    
+    const docRef = adminDb.collection('system').doc('xPostCounter');
+    const doc = await docRef.get();
+    
+    if (!doc.exists) {
+      await docRef.set({ [monthKey]: 0 });
+      return { monthKey, count: 0 };
+    }
+    
+    const data = doc.data();
+    const count = data[monthKey] || 0;
+    
+    return { monthKey, count };
+  } catch (error) {
+    console.error('❌ X 포스팅 카운터 조회 실패:', error);
+    return null;
+  }
+}
+
+async function incrementXPostCount(monthKey) {
+  try {
+    const docRef = adminDb.collection('system').doc('xPostCounter');
+    await docRef.set({
+      [monthKey]: admin.firestore.FieldValue.increment(1)
+    }, { merge: true });
+  } catch (error) {
+    console.error('❌ X 포스팅 카운터 증가 실패:', error);
+  }
+}
+
+// 10. X에 포스팅
+async function postToX(title, postId, category) {
+  // X API가 설정되지 않았으면 건너뛰기
+  if (!xClient) {
+    console.log('⏭️ X API가 설정되지 않아 X 포스팅을 건너뜁니다.');
+    return false;
+  }
+  
+  // 대상 카테고리가 아니면 건너뛰기
+  if (!X_POST_CATEGORIES.includes(category)) {
+    console.log(`⏭️ ${category}는 X 포스팅 대상이 아닙니다.`);
+    return false;
+  }
+  
+  try {
+    // 월별 포스팅 제한 확인 (500개)
+    const counterData = await getXPostCount();
+    if (!counterData) {
+      console.log('⚠️ X 포스팅 카운터를 확인할 수 없습니다.');
+      return false;
+    }
+    
+    if (counterData.count >= 500) {
+      console.log(`⚠️ 이번 달 X 포스팅 제한(500개)에 도달했습니다. (현재: ${counterData.count}개)`);
+      return false;
+    }
+    
+    console.log(`🐦 X에 포스팅 중... (이번 달: ${counterData.count}/500)`);
+    
+    // 포스트 URL 생성
+    const postUrl = `https://tupyo-net.web.app/post/${postId}`;
+    
+    // 트윗 텍스트 생성 (제목 + 해시태그 + URL, 280자 제한)
+    const categoryTag = `#${category}`;
+    let tweetText = `${title}\n\n${categoryTag}\n${postUrl}`;
+    
+    // 280자 제한 확인 및 조정
+    if (tweetText.length > 280) {
+      const maxTitleLength = 280 - categoryTag.length - postUrl.length - 6; // 6 = '\n\n' + '\n' + 여유
+      const truncatedTitle = title.substring(0, maxTitleLength - 3) + '...';
+      tweetText = `${truncatedTitle}\n\n${categoryTag}\n${postUrl}`;
+    }
+    
+    // 트윗 포스팅
+    const tweet = await xClient.v2.tweet(tweetText);
+    
+    console.log(`✅ X 포스팅 완료! Tweet ID: ${tweet.data.id}`);
+    
+    // 카운터 증가
+    await incrementXPostCount(counterData.monthKey);
+    
+    return true;
+  } catch (error) {
+    console.error('❌ X 포스팅 실패:', error);
+    return false;
+  }
+}
+
+// 11. Firestore에 저장
 async function savePostToFirestore(postData) {
   try {
     console.log('💾 Firestore에 포스트 저장 중...');
@@ -462,8 +574,11 @@ async function main() {
           postData.imageCredit = imageCredit;
         }
         
-        await savePostToFirestore(postData);
+        const postId = await savePostToFirestore(postData);
         successCount++;
+        
+        // X에 포스팅 (정치, 경제, 코인만)
+        await postToX(processedArticle.title, postId, processedArticle.category);
         
         console.log(`✅ 완료: ${processedArticle.title}\n`);
         
