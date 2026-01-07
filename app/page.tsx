@@ -140,12 +140,12 @@ export default function HomePage() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: '투표넷 - 뉴스 너머, 사람들의 진짜 목소리',
+    name: '미주뉴스 - 미국주식과 코인 뉴스',
     url: 'https://tupyo-net.web.app',
-    description: '정치, 경제, 부동산, 증권, 코인, 연예, 스포츠, 과학, 건강, 세계, IT 등 모든 주제의 뉴스와 사람들의 의견',
+    description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 정보',
     publisher: {
       '@type': 'Organization',
-      name: '투표넷',
+      name: '미주뉴스',
       logo: {
         '@type': 'ImageObject',
         url: 'https://tupyo-net.web.app/logo.png',

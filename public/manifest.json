@@ -1,7 +1,7 @@
 {
-  "name": "투표넷 - 뉴스 너머, 사람들의 진짜 목소리",
-  "short_name": "투표넷",
-  "description": "정치, 경제, 연예, 스포츠, 과학, 건강, 세계, IT 등 모든 주제의 뉴스와 사람들의 의견",
+  "name": "미주뉴스 - 미국주식과 코인 뉴스",
+  "short_name": "미주뉴스",
+  "description": "미국주식, 암호화폐, 코인 관련 최신 뉴스와 정보",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

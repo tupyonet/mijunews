@@ -12,7 +12,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const pexelsClient = createClient(process.env.PEXELS_API_KEY);
 const parser = new Parser();
 
-// X API 클라이언트 초기화 (환경변수가 있을 때만)
+// X API 클라이언트 초기화 (OAuth 1.0a - Read and Write)
 let xClient = null;
 if (process.env.X_API_KEY && process.env.X_API_SECRET && 
     process.env.X_ACCESS_TOKEN && process.env.X_ACCESS_SECRET) {
@@ -28,29 +28,16 @@ if (process.env.X_API_KEY && process.env.X_API_SECRET &&
 }
 
 // X 포스팅 대상 카테고리
-const X_POST_CATEGORIES = ['정치', '경제', '코인'];
+const X_POST_CATEGORIES = ['미국주식', '코인'];
 
 // RSS 피드 URL 목록 (배열로 변경 - 카테고리별 여러 소스)
 const RSS_FEEDS = {
-  정치: [
-    'https://www.chosun.com/arc/outboundfeeds/rss/category/politics/?outputType=xml',
-    'https://www.khan.co.kr/rss/rssdata/politic_news.xml',
-    'https://www.mk.co.kr/rss/30200030/',
-    'https://www.hankyung.com/feed/politics',
-  ],
-  경제: [
-    'https://www.chosun.com/arc/outboundfeeds/rss/category/economy/?outputType=xml',
-    'https://www.khan.co.kr/rss/rssdata/economy_news.xml',
-    'https://www.mk.co.kr/rss/30100041/',
-    'https://www.hankyung.com/feed/economy',
-  ],
-  부동산: [
-    'https://www.mk.co.kr/rss/50300009/',
-    'https://www.hankyung.com/feed/realestate',
-  ],
-  증권: [
-    'https://www.mk.co.kr/rss/50200011/',
-    'https://www.hankyung.com/feed/finance',
+  미국주식: [
+    'https://feeds.finance.yahoo.com/rss/2.0/headline?s=^GSPC&region=US&lang=en-US',
+    'https://feeds.finance.yahoo.com/rss/2.0/headline?s=^DJI&region=US&lang=en-US',
+    'https://feeds.finance.yahoo.com/rss/2.0/headline?s=^IXIC&region=US&lang=en-US',
+    'https://www.cnbc.com/id/100003114/device/rss/rss.html',
+    'https://www.marketwatch.com/rss/topstories',
   ],
   코인: [
     'https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml',
@@ -62,35 +49,12 @@ const RSS_FEEDS = {
     'https://www.ccn.com/news/crypto-news/feeds/',
     'https://www.ccn.com/analysis/crypto-analysis/feeds/',
   ],
-  연예: ['https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=ko&gl=KR&ceid=KR:ko'],
-  스포츠: ['https://news.google.com/rss/headlines/section/topic/SPORTS?hl=ko&gl=KR&ceid=KR:ko'],
-  과학: ['https://news.google.com/rss/headlines/section/topic/SCITECH?hl=ko&gl=KR&ceid=KR:ko'],
-  건강: ['https://news.google.com/rss/headlines/section/topic/HEALTH?hl=ko&gl=KR&ceid=KR:ko'],
-  세계: ['https://news.google.com/rss/headlines/section/topic/WORLD?hl=ko&gl=KR&ceid=KR:ko'],
-  IT: ['https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=ko&gl=KR&ceid=KR:ko'],
 };
 
 // 카테고리 매핑 (Google News 카테고리 → 사이트 카테고리)
 const CATEGORY_MAP = {
-  'POLITICS': '정치',
-  'BUSINESS': '경제',
-  'ENTERTAINMENT': '연예',
-  'SPORTS': '스포츠',
-  'SCITECH': '과학',
-  'HEALTH': '건강',
-  'WORLD': '세계',
-  'TECHNOLOGY': 'IT',
-  '정치': '정치',
-  '경제': '경제',
-  '부동산': '부동산',
-  '증권': '증권',
+  '미국주식': '미국주식',
   '코인': '코인',
-  '연예': '연예',
-  '스포츠': '스포츠',
-  '과학': '과학',
-  '건강': '건강',
-  '세계': '세계',
-  'IT': 'IT',
 };
 
 // 1. RSS 피드에서 최신 기사 수집 (특정 카테고리만)
@@ -289,17 +253,8 @@ async function getCategoryStats() {
   try {
     const snapshot = await adminDb.collection('posts').get();
     const stats = {
-      정치: 0,
-      경제: 0,
-      부동산: 0,
-      증권: 0,
+      미국주식: 0,
       코인: 0,
-      연예: 0,
-      스포츠: 0,
-      IT: 0,
-      과학: 0,
-      건강: 0,
-      세계: 0,
     };
     
     snapshot.forEach(doc => {
@@ -318,19 +273,10 @@ async function getCategoryStats() {
 
 // 7. 목표 비율에 따라 가장 부족한 카테고리 선택
 function selectCategoryByRatio(stats) {
-  // 목표 비율 (정치:경제:부동산:증권:코인:연예:스포츠:IT:과학:건강:세계 = 4:4:1:2:4:1:1:1:0.5:1:1)
+  // 목표 비율 (미국주식:코인 = 1:1)
   const targetRatios = {
-    정치: 8,
-    경제: 4,
-    부동산: 1,
-    증권: 2,
-    코인: 4,
-    연예: 1,
-    스포츠: 1,
-    IT: 1,
-    과학: 0.5,
-    건강: 4,
-    세계: 1,
+    미국주식: 1,
+    코인: 1,
   };
   
   console.log('\n📊 현재 카테고리별 기사 수:');
@@ -450,14 +396,12 @@ async function postToX(title, postId, category) {
       tweetText = `${truncatedTitle}\n\n${categoryTag}\n${postUrl}`;
     }
     
-    // 트윗 포스팅
+    // 트윗 포스팅 (v2 API 사용 - Free Tier 기본)
     const tweet = await xClient.v2.tweet(tweetText);
-    
     console.log(`✅ X 포스팅 완료! Tweet ID: ${tweet.data.id}`);
     
     // 카운터 증가
     await incrementXPostCount(counterData.monthKey);
-    
     return true;
   } catch (error) {
     console.error('❌ X 포스팅 실패:', error);

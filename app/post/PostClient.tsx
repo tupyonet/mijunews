@@ -101,7 +101,7 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
   // 동적으로 메타 태그 업데이트
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} | 투표넷`;
+      document.title = `${post.title} | 미주뉴스`;
       
       // 메타 description
       const metaDescription = document.querySelector('meta[name="description"]');
@@ -294,12 +294,12 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
     dateModified: post.createdAt,
     author: {
       '@type': 'Organization',
-      name: '투표넷',
+      name: '미주뉴스',
       url: 'https://tupyo-net.web.app',
     },
     publisher: {
       '@type': 'Organization',
-      name: '투표넷',
+      name: '미주뉴스',
       logo: {
         '@type': 'ImageObject',
         url: 'https://tupyo-net.web.app/logo.png',

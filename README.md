@@ -1,14 +1,15 @@
-# Tupyo - 완전 자동화 AI 미디어 사이트
+# 미주뉴스 - 미국주식과 코인 뉴스 사이트
 
-AI가 매일 자동으로 콘텐츠를 생성하는 테크 미디어 플랫폼입니다. Google Gemini API로 블로그 글을 생성하고, Unsplash에서 이미지를 검색하여 Firebase에 저장합니다.
+AI가 매일 자동으로 콘텐츠를 생성하는 미국주식 및 암호화폐 뉴스 플랫폼입니다. Google Gemini API로 뉴스 기사를 생성하고, Pexels에서 이미지를 검색하여 Firebase에 저장합니다.
 
 ## 🎯 주요 기능
 
 - ✅ **완전 자동화**: GitHub Actions가 매일 자동으로 콘텐츠 생성
-- ✅ **AI 콘텐츠 생성**: Google Gemini API를 활용한 고품질 기술 블로그
+- ✅ **AI 뉴스 생성**: Google Gemini API를 활용한 고품질 미국주식 및 코인 뉴스
 - ✅ **자동 이미지 수집**: Pexels API로 관련 이미지 검색 및 저장
 - ✅ **SEO 최적화**: Next.js Metadata API로 검색 엔진 최적화
 - ✅ **반응형 디자인**: Tailwind CSS로 구현한 모던한 UI
+- ✅ **투표 시스템**: 뉴스에 대한 독자 의견 수집
 
 ## 🛠️ 기술 스택
 
@@ -34,8 +35,8 @@ AI가 매일 자동으로 콘텐츠를 생성하는 테크 미디어 플랫폼�
 ### 1. 저장소 클론
 
 \`\`\`bash
-git clone https://github.com/yourusername/tupyo.git
-cd tupyo
+git clone https://github.com/yourusername/mijunews.git
+cd mijunews
 \`\`\`
 
 ### 2. 의존성 설치
@@ -104,14 +105,13 @@ GitHub Actions 탭에서 "Daily Content Automation" 워크플로우를 선택하
 ## 📁 프로젝트 구조
 
 \`\`\`
-tupyo/
+mijunews/
 ├── app/                      # Next.js App Router
 │   ├── layout.tsx           # 루트 레이아웃
-│   ├── page.tsx             # 메인 페이지 (포스트 리스트)
+│   ├── page.tsx             # 메인 페이지 (뉴스 리스트)
 │   ├── globals.css          # 글로벌 스타일
 │   ├── post/
-│   │   └── [id]/
-│   │       └── page.tsx     # 포스트 상세 페이지
+│   │   └── PostClient.tsx   # 뉴스 상세 페이지
 │   └── about/
 │       └── page.tsx         # 소개 페이지
 ├── .github/
@@ -119,7 +119,7 @@ tupyo/
 │       └── main.yml         # GitHub Actions 워크플로우
 ├── firebase.js              # Firebase 클라이언트 설정
 ├── firebase-admin.js        # Firebase Admin SDK 설정
-├── automation_script.js     # 콘텐츠 생성 자동화 스크립트
+├── rss_processor.js         # RSS 수집 및 AI 변환 스크립트
 ├── package.json
 ├── next.config.js
 ├── tailwind.config.js
@@ -151,35 +151,40 @@ firebase deploy
 ### 콘텐츠 자동 생성 흐름
 
 1. **GitHub Actions 실행**: 매일 정해진 시간에 자동 실행
-2. **주제 선택**: 미리 정의된 IT/테크 주제 중 랜덤 선택
-3. **AI 콘텐츠 생성**: Gemini API로 블로그 글 생성
-4. **이미지 검색**: 키워드 기반으로 Pexels에서 이미지 검색
-5. **이미지 업로드**: Firebase Storage에 이미지 저장
-6. **데이터 저장**: Firestore에 제목, 본문, 이미지 URL 저장
-7. **자동 표시**: Next.js 프론트엔드에 자동으로 표시
+2. **RSS 수집**: 미국주식/코인 관련 RSS 피드에서 최신 뉴스 수집
+3. **카테고리 분석**: 현재 기사 수를 분석하여 부족한 카테고리 선택
+4. **AI 뉴스 재구성**: Gemini API로 뉴스 기사를 독창적으로 재작성
+5. **이미지 검색**: 키워드 기반으로 Pexels에서 이미지 검색
+6. **이미지 업로드**: Firebase Storage에 이미지 저장
+7. **데이터 저장**: Firestore에 제목, 본문, 이미지 URL 저장
+8. **자동 표시**: Next.js 프론트엔드에 자동으로 표시
 
 ### Firestore 데이터 구조
 
 \`\`\`javascript
 {
-  title: string,           // 블로그 제목
+  title: string,           // 뉴스 제목
   content: string,         // 마크다운 형식의 본문
   keywords: string[],      // 키워드 배열
+  category: string,        // 카테고리 (미국주식 또는 코인)
   imageUrl: string,        // Firebase Storage 이미지 URL
   imageCredit: {
     photographer: string,
     photographerUrl: string
   },
-  topic: string,           // 원본 주제
+  originalLink: string,    // 원본 뉴스 링크
+  originalTitle: string,   // 원본 뉴스 제목
   createdAt: string,       // ISO 날짜 문자열
-  views: number            // 조회수
+  views: number,           // 조회수
+  likes: number,           // 좋아요 수
+  dislikes: number         // 싫어요 수
 }
 \`\`\`
 
 ## 🔧 커스터마이징
 
-### 주제 변경
-\`automation_script.js\`의 \`topics\` 배열을 수정하여 원하는 주제로 변경할 수 있습니다.
+### RSS 피드 변경
+\`rss_processor.js\`의 \`RSS_FEEDS\` 객체를 수정하여 원하는 RSS 피드를 추가하거나 변경할 수 있습니다.
 
 ### 스케줄 변경
 \`.github/workflows/main.yml\`의 cron 표현식을 수정하여 실행 시간을 변경할 수 있습니다.
@@ -221,5 +226,5 @@ MIT License
 
 ---
 
-**Made with ❤️ using Google Gemini, Pexels & Firebase**
+**미주뉴스 - 미국주식과 코인 뉴스**
 
