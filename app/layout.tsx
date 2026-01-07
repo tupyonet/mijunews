@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import AdSenseScript from './components/AdSenseScript';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import TradingViewTicker from './components/TradingViewTicker';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
@@ -100,6 +101,9 @@ export default function RootLayout({
             </div>
           </div>
         </header>
+        
+        {/* TradingView 티커 */}
+        <TradingViewTicker />
         
         <main className="min-h-screen">
           {children}
