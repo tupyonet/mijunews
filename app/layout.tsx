@@ -79,7 +79,7 @@ export default function RootLayout({
         <header className="bg-white border-b-2 border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* 헤더 - 로고 왼쪽, 네비게이션 오른쪽 */}
-            <div className="py-2 flex items-center justify-between">
+            <div className="py-1.5 flex items-center justify-between">
               {/* 로고 - 왼쪽 */}
               <a href="/" className="inline-block">
                 <Image src="/logo.png" alt="미주뉴스" width={200} height={48} className="h-10 w-auto" priority />
