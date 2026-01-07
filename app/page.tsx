@@ -61,20 +61,20 @@ export default function HomePage() {
   const searchParams = useSearchParams();
   const category = searchParams.get('category');
   
-  const [hotPosts, setHotPosts] = useState<Post[]>([]);
-  const [latestPosts, setLatestPosts] = useState<Post[]>([]);
+  const [usStockPosts, setUsStockPosts] = useState<Post[]>([]);
+  const [coinPosts, setCoinPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchPosts() {
       try {
         if (category) {
-          // 카테고리 필터링
+          // 특정 카테고리만 보기
           const categoryQuery = query(
             collection(db, 'posts'),
             where('category', '==', category),
             orderBy('createdAt', 'desc'),
-            limit(20)
+            limit(12)
           );
           
           const categorySnapshot = await getDocs(categoryQuery);
@@ -83,36 +83,44 @@ export default function HomePage() {
             posts.push({ id: doc.id, ...doc.data() } as Post);
           });
           
-          setHotPosts(posts.slice(0, 10));
-          setLatestPosts(posts.slice(0, 10));
+          if (category === '미국주식') {
+            setUsStockPosts(posts);
+            setCoinPosts([]);
+          } else if (category === '코인') {
+            setCoinPosts(posts);
+            setUsStockPosts([]);
+          }
         } else {
-          // 핫이슈 - 투표 많은 순
-          const hotQuery = query(
+          // 홈: 미국주식과 코인 섹션 모두 표시
+          // 미국주식 섹션
+          const usStockQuery = query(
             collection(db, 'posts'),
-            orderBy('likes', 'desc'),
-            limit(10)
-          );
-          
-          const hotSnapshot = await getDocs(hotQuery);
-          const hot: Post[] = [];
-          hotSnapshot.forEach((doc) => {
-            hot.push({ id: doc.id, ...doc.data() } as Post);
-          });
-          setHotPosts(hot);
-
-          // 최신 뉴스
-          const latestQuery = query(
-            collection(db, 'posts'),
+            where('category', '==', '미국주식'),
             orderBy('createdAt', 'desc'),
-            limit(10)
+            limit(12)
           );
           
-          const latestSnapshot = await getDocs(latestQuery);
-          const latest: Post[] = [];
-          latestSnapshot.forEach((doc) => {
-            latest.push({ id: doc.id, ...doc.data() } as Post);
+          const usStockSnapshot = await getDocs(usStockQuery);
+          const usStocks: Post[] = [];
+          usStockSnapshot.forEach((doc) => {
+            usStocks.push({ id: doc.id, ...doc.data() } as Post);
           });
-          setLatestPosts(latest);
+          setUsStockPosts(usStocks);
+
+          // 코인 섹션
+          const coinQuery = query(
+            collection(db, 'posts'),
+            where('category', '==', '코인'),
+            orderBy('createdAt', 'desc'),
+            limit(12)
+          );
+          
+          const coinSnapshot = await getDocs(coinQuery);
+          const coins: Post[] = [];
+          coinSnapshot.forEach((doc) => {
+            coins.push({ id: doc.id, ...doc.data() } as Post);
+          });
+          setCoinPosts(coins);
         }
 
       } catch (error) {
@@ -153,13 +161,13 @@ export default function HomePage() {
     },
   };
 
-  // 섹션 렌더링 함수 (전통 미디어 스타일)
-  const renderSection = (posts: Post[], title: string, emoji: string) => {
+  // 섹션 렌더링 함수 (동아일보 스타일)
+  const renderSection = (posts: Post[], title: string, emoji: string, categoryLink?: string) => {
     if (posts.length === 0) {
       return (
-        <section className="mb-12">
-          <div className="border-b-2 border-gray-900 mb-6">
-            <h2 className="text-2xl font-black text-gray-900 pb-3">
+        <section className="mb-16">
+          <div className="border-b-4 border-gray-900 mb-6 pb-2">
+            <h2 className="text-2xl font-black text-gray-900">
               {emoji} {title}
             </h2>
           </div>
@@ -171,34 +179,35 @@ export default function HomePage() {
     }
 
     const mainPost = posts[0];
-    const sidebarPosts = posts.slice(1, 4);
-    const gridPosts = posts.slice(4, 10);
+    const sidebarPosts = posts.slice(1, 5);
+    const gridPosts = posts.slice(5, 11);
 
     return (
-      <section className="mb-12">
-        {/* 섹션 제목 */}
-        <div className="border-b-2 border-gray-900 mb-6">
-          <h2 className="text-2xl font-black text-gray-900 pb-3">
+      <section className="mb-20">
+        {/* 섹션 제목 - 동아일보 스타일 */}
+        <div className="border-b-4 border-gray-900 mb-8 pb-2 flex items-center justify-between">
+          <h2 className="text-3xl font-black text-gray-900">
             {emoji} {title}
           </h2>
+          {categoryLink && !category && (
+            <a 
+              href={categoryLink} 
+              className="text-sm font-bold text-gray-600 hover:text-blue-600 transition"
+            >
+              전체보기 →
+            </a>
+          )}
         </div>
 
-        {/* 메인 콘텐츠 영역 (3단 구조) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* 메인 히어로 기사 (왼쪽 2칸) */}
-          <div className="lg:col-span-2">
+        {/* 메인 히어로 영역 - 좌우 2단 구조 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+          {/* 왼쪽: 메인 기사 이미지 */}
+          <div className="lg:col-span-1">
             <Link href={`/post?id=${mainPost.id}`}>
               <article className="group">
-                {/* 카테고리 태그 */}
-                {mainPost.category && (
-                  <span className="inline-block bg-blue-600 text-white text-xs font-bold px-3 py-1 mb-3">
-                    {mainPost.category}
-                  </span>
-                )}
-                
                 {/* 메인 이미지 */}
                 {mainPost.imageUrl && (
-                  <div className="relative w-full h-[400px] mb-4 overflow-hidden">
+                  <div className="relative w-full h-[450px] mb-5 overflow-hidden">
                     <Image
                       src={mainPost.imageUrl}
                       alt={mainPost.title}
@@ -210,134 +219,45 @@ export default function HomePage() {
                 )}
                 
                 {/* 제목 */}
-                <h3 className="text-3xl font-black text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition">
+                <h3 className="text-3xl font-bold text-gray-900 mb-4 leading-snug group-hover:text-blue-600 transition">
                   {mainPost.title}
                 </h3>
                 
                 {/* 미리보기 */}
-                <p className="text-base text-gray-700 leading-relaxed mb-4 line-clamp-3">
-                  {getContentPreview(mainPost.content)}
+                <p className="text-base text-gray-600 leading-relaxed line-clamp-3">
+                  {getContentPreview(mainPost.content, 150)}
                 </p>
-                
-                {/* 메타 정보 */}
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                  <time dateTime={mainPost.createdAt}>
-                    {formatDate(mainPost.createdAt)}
-                  </time>
-                  <span className="flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    {mainPost.views.toLocaleString()}
-                  </span>
-                  {(() => {
-                    const total = (mainPost.likes || 0) + (mainPost.dislikes || 0);
-                    return total > 0 ? (
-                      <span className="flex items-center gap-1">
-                        투표수 {total.toLocaleString()}표
-                      </span>
-                    ) : null;
-                  })()}
-                </div>
-
-                {/* 투표 결과 바 */}
-                {(() => {
-                  const likes = mainPost.likes || 0;
-                  const dislikes = mainPost.dislikes || 0;
-                  const total = likes + dislikes;
-                  const { likePercent, dislikePercent } = getVotePercentage(likes, dislikes);
-                  
-                  return total > 0 ? (
-                    <div className="flex h-2 rounded-full overflow-hidden bg-gray-200">
-                      {likePercent > 0 && (
-                        <div className="bg-green-500" style={{ width: `${likePercent}%` }} />
-                      )}
-                      {dislikePercent > 0 && (
-                        <div className="bg-red-500" style={{ width: `${dislikePercent}%` }} />
-                      )}
-                    </div>
-                  ) : null;
-                })()}
               </article>
             </Link>
           </div>
           
-          {/* 사이드바 기사 (오른쪽 1칸) */}
-          <div className="space-y-6">
+          {/* 오른쪽: 서브 기사 리스트 (텍스트만) */}
+          <div className="space-y-1 border-l-2 border-gray-200 pl-6">
             {sidebarPosts.map((post, index) => (
               <Link key={post.id} href={`/post?id=${post.id}`}>
-                <article className="group border-b border-gray-200 pb-4 last:border-0">
-                  {/* 이미지 */}
-                  {post.imageUrl && (
-                    <div className="relative w-full h-48 mb-3 overflow-hidden rounded">
-                      <Image
-                        src={post.imageUrl}
-                        alt={post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  )}
-                  
-                  {/* 카테고리 */}
-                  {post.category && (
-                    <span className="inline-block bg-gray-200 text-gray-800 text-xs font-bold px-2 py-1 mb-2">
-                      {post.category}
-                    </span>
-                  )}
-                  
-                  {/* 제목 */}
-                  <h4 className="text-lg font-bold text-gray-900 mb-2 leading-tight line-clamp-2 group-hover:text-blue-600 transition">
-                    {post.title}
-                  </h4>
-                  
-                  {/* 날짜와 투표 */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                    <time dateTime={post.createdAt}>
-                      {new Date(post.createdAt).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })}
-                    </time>
-                    {(() => {
-                      const total = (post.likes || 0) + (post.dislikes || 0);
-                      return total > 0 ? (
-                        <span className="font-semibold">👍 {total.toLocaleString()}표</span>
-                      ) : null;
-                    })()}
+                <article className="group py-4 border-b border-gray-200 last:border-0">
+                  {/* 불릿 포인트와 제목 */}
+                  <div className="flex gap-3">
+                    <span className="text-blue-600 font-bold mt-1">•</span>
+                    <h4 className="text-lg font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition line-clamp-2">
+                      {post.title}
+                    </h4>
                   </div>
-
-                  {/* 투표 결과 바 */}
-                  {(() => {
-                    const likes = post.likes || 0;
-                    const dislikes = post.dislikes || 0;
-                    const total = likes + dislikes;
-                    const { likePercent, dislikePercent } = getVotePercentage(likes, dislikes);
-                    
-                    return total > 0 ? (
-                      <div className="flex h-1.5 rounded-full overflow-hidden bg-gray-200">
-                        {likePercent > 0 && (
-                          <div className="bg-green-500" style={{ width: `${likePercent}%` }} />
-                        )}
-                        {dislikePercent > 0 && (
-                          <div className="bg-red-500" style={{ width: `${dislikePercent}%` }} />
-                        )}
-                      </div>
-                    ) : null;
-                  })()}
                 </article>
               </Link>
             ))}
           </div>
         </div>
 
-        {/* 그리드 기사 (4열) */}
+        {/* 3단 그리드 기사 - 동아일보 스타일 */}
         {gridPosts.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-gray-200">
             {gridPosts.map((post) => (
               <Link key={post.id} href={`/post?id=${post.id}`}>
                 <article className="group">
                   {/* 이미지 */}
                   {post.imageUrl && (
-                    <div className="relative w-full h-40 mb-3 overflow-hidden rounded">
+                    <div className="relative w-full h-48 mb-4 overflow-hidden">
                       <Image
                         src={post.imageUrl}
                         alt={post.title}
@@ -347,52 +267,15 @@ export default function HomePage() {
                     </div>
                   )}
                   
-                  {/* 카테고리 */}
-                  {post.category && (
-                    <span className="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded mb-2">
-                      {post.category}
-                    </span>
-                  )}
-                  
                   {/* 제목 */}
-                  <h4 className="text-sm font-bold text-gray-900 mb-2 leading-tight line-clamp-2 group-hover:text-blue-600 transition">
+                  <h4 className="text-base font-bold text-gray-900 mb-2 leading-snug line-clamp-2 group-hover:text-blue-600 transition">
                     {post.title}
                   </h4>
                   
-                  {/* 메타 */}
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                    <time dateTime={post.createdAt}>
-                      {new Date(post.createdAt).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}
-                    </time>
-                    {(() => {
-                      const total = (post.likes || 0) + (post.dislikes || 0);
-                      return total > 0 ? (
-                        <>
-                          <span>•</span>
-                          <span>투표수 {total.toLocaleString()}</span>
-                        </>
-                      ) : null;
-                    })()}
-                  </div>
-
-                  {/* 투표 결과 바 */}
-                  {(() => {
-                    const likes = post.likes || 0;
-                    const dislikes = post.dislikes || 0;
-                    const total = likes + dislikes;
-                    const { likePercent, dislikePercent } = getVotePercentage(likes, dislikes);
-                    
-                    return total > 0 ? (
-                      <div className="flex h-1.5 rounded-full overflow-hidden bg-gray-200">
-                        {likePercent > 0 && (
-                          <div className="bg-green-500" style={{ width: `${likePercent}%` }} />
-                        )}
-                        {dislikePercent > 0 && (
-                          <div className="bg-red-500" style={{ width: `${dislikePercent}%` }} />
-                        )}
-                      </div>
-                    ) : null;
-                  })()}
+                  {/* 간단한 설명 */}
+                  <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+                    {getContentPreview(post.content, 80)}
+                  </p>
                 </article>
               </Link>
             ))}
@@ -411,21 +294,29 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 상단 광고 */}
-        <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
+        <div className="mb-8">
+          <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
+        </div>
 
-        {/* 핫이슈 섹션 */}
-        {!category && renderSection(hotPosts, '핫이슈', '🔥')}
+        {/* 미국주식 섹션 */}
+        {usStockPosts.length > 0 && renderSection(usStockPosts, '미국주식', '📈', '/?category=미국주식')}
 
         {/* 중간 광고 */}
-        {!category && <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />}
+        {!category && usStockPosts.length > 0 && coinPosts.length > 0 && (
+          <div className="my-12">
+            <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
+          </div>
+        )}
 
-        {/* 최신 뉴스 섹션 */}
-        {renderSection(latestPosts, category ? `${category} 뉴스` : '최신 뉴스', category ? '📰' : '⚡')}
+        {/* 코인 섹션 */}
+        {coinPosts.length > 0 && renderSection(coinPosts, '코인', '₿', '/?category=코인')}
 
         {/* 하단 광고 */}
-        <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
+        <div className="mt-12">
+          <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
+        </div>
       </div>
     </>
   );

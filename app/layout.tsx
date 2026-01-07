@@ -78,27 +78,26 @@ export default function RootLayout({
         <AdSenseScript />
         <header className="bg-white border-b-2 border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* 로고 - 가운데 정렬 */}
-            <div className="py-3 flex justify-center">
+            {/* 헤더 - 로고 왼쪽, 네비게이션 오른쪽 */}
+            <div className="py-3 flex items-center justify-between">
+              {/* 로고 - 왼쪽 */}
               <a href="/" className="inline-block">
                 <Image src="/logo.png" alt="미주뉴스" width={200} height={48} className="h-10 w-auto" priority />
               </a>
-            </div>
-            
-            {/* 카테고리 네비게이션 - 가운데 정렬, 모바일 스크롤 가능 */}
-            <nav className="pb-3 -mx-4 px-4 overflow-x-auto scrollbar-hide">
-              <div className="flex items-center justify-center gap-3 min-w-max">
-                  <a href="/" className="text-sm font-bold text-gray-900 hover:text-blue-600 transition whitespace-nowrap">
-                    홈
-                  </a>
-                  <a href="/?category=미국주식" className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition whitespace-nowrap">
-                    미국주식
-                  </a>
-                  <a href="/?category=코인" className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition whitespace-nowrap">
-                    코인
-                  </a>
-                </div>
+              
+              {/* 카테고리 네비게이션 - 오른쪽 */}
+              <nav className="flex items-center gap-6">
+                <a href="/" className="text-sm font-bold text-gray-900 hover:text-blue-600 transition whitespace-nowrap">
+                  홈
+                </a>
+                <a href="/?category=미국주식" className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition whitespace-nowrap">
+                  미국주식
+                </a>
+                <a href="/?category=코인" className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition whitespace-nowrap">
+                  코인
+                </a>
               </nav>
+            </div>
           </div>
         </header>
         
