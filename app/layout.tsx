@@ -91,6 +91,9 @@ export default function RootLayout({
                 <a href="/" className="text-sm font-bold text-gray-900 hover:text-blue-600 transition whitespace-nowrap">
                   홈
                 </a>
+                <a href="https://jnp.monster/stock/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition whitespace-nowrap">
+                  시세
+                </a>
                 <a href="/?category=미국주식" className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition whitespace-nowrap">
                   미국주식
                 </a>
