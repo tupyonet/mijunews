@@ -183,9 +183,9 @@ export default function HomePage() {
     const gridPosts = posts.slice(5, 11);
 
     return (
-      <section className="mb-20">
+      <section className="mb-12">
         {/* 섹션 제목 - 동아일보 스타일 */}
-        <div className="border-b-4 border-gray-900 mb-8 pb-2 flex items-center justify-between">
+        <div className="border-b-4 border-gray-900 mb-5 pb-2 flex items-center justify-between">
           <h2 className="text-3xl font-black text-gray-900">
             {emoji} {title}
           </h2>
@@ -200,14 +200,14 @@ export default function HomePage() {
         </div>
 
         {/* 메인 히어로 영역 - 좌우 2단 구조 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* 왼쪽: 메인 기사 이미지 */}
           <div className="lg:col-span-1">
             <Link href={`/post?id=${mainPost.id}`}>
               <article className="group">
                 {/* 메인 이미지 */}
                 {mainPost.imageUrl && (
-                  <div className="relative w-full h-[450px] mb-5 overflow-hidden">
+                  <div className="relative w-full h-[350px] mb-4 overflow-hidden">
                     <Image
                       src={mainPost.imageUrl}
                       alt={mainPost.title}
@@ -219,27 +219,27 @@ export default function HomePage() {
                 )}
                 
                 {/* 제목 */}
-                <h3 className="text-3xl font-bold text-gray-900 mb-4 leading-snug group-hover:text-blue-600 transition">
+                <h3 className="text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-blue-600 transition">
                   {mainPost.title}
                 </h3>
                 
                 {/* 미리보기 */}
-                <p className="text-base text-gray-600 leading-relaxed line-clamp-3">
-                  {getContentPreview(mainPost.content, 150)}
+                <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+                  {getContentPreview(mainPost.content, 120)}
                 </p>
               </article>
             </Link>
           </div>
           
           {/* 오른쪽: 서브 기사 리스트 (텍스트만) */}
-          <div className="space-y-1 border-l-2 border-gray-200 pl-6">
+          <div className="space-y-0 border-l-2 border-gray-200 pl-5">
             {sidebarPosts.map((post, index) => (
               <Link key={post.id} href={`/post?id=${post.id}`}>
-                <article className="group py-4 border-b border-gray-200 last:border-0">
+                <article className="group py-3 border-b border-gray-200 last:border-0">
                   {/* 불릿 포인트와 제목 */}
-                  <div className="flex gap-3">
-                    <span className="text-blue-600 font-bold mt-1">•</span>
-                    <h4 className="text-lg font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition line-clamp-2">
+                  <div className="flex gap-2">
+                    <span className="text-blue-600 font-bold mt-0.5">•</span>
+                    <h4 className="text-base font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition line-clamp-2">
                       {post.title}
                     </h4>
                   </div>
@@ -251,13 +251,13 @@ export default function HomePage() {
 
         {/* 3단 그리드 기사 - 동아일보 스타일 */}
         {gridPosts.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-6 border-t border-gray-200">
             {gridPosts.map((post) => (
               <Link key={post.id} href={`/post?id=${post.id}`}>
                 <article className="group">
                   {/* 이미지 */}
                   {post.imageUrl && (
-                    <div className="relative w-full h-48 mb-4 overflow-hidden">
+                    <div className="relative w-full h-40 mb-3 overflow-hidden">
                       <Image
                         src={post.imageUrl}
                         alt={post.title}
@@ -268,13 +268,13 @@ export default function HomePage() {
                   )}
                   
                   {/* 제목 */}
-                  <h4 className="text-base font-bold text-gray-900 mb-2 leading-snug line-clamp-2 group-hover:text-blue-600 transition">
+                  <h4 className="text-sm font-bold text-gray-900 mb-2 leading-snug line-clamp-2 group-hover:text-blue-600 transition">
                     {post.title}
                   </h4>
                   
                   {/* 간단한 설명 */}
-                  <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
-                    {getContentPreview(post.content, 80)}
+                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">
+                    {getContentPreview(post.content, 70)}
                   </p>
                 </article>
               </Link>
@@ -294,9 +294,9 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* 상단 광고 */}
-        <div className="mb-8">
+        <div className="mb-6">
           <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
         </div>
 
@@ -305,7 +305,7 @@ export default function HomePage() {
 
         {/* 중간 광고 */}
         {!category && usStockPosts.length > 0 && coinPosts.length > 0 && (
-          <div className="my-12">
+          <div className="my-8">
             <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
           </div>
         )}
@@ -314,7 +314,7 @@ export default function HomePage() {
         {coinPosts.length > 0 && renderSection(coinPosts, '코인', '₿', '/?category=코인')}
 
         {/* 하단 광고 */}
-        <div className="mt-12">
+        <div className="mt-8">
           <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
         </div>
       </div>

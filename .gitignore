@@ -50,3 +50,7 @@ ui-debug.log
 *.swo
 *~
 
+
+# Firebase Service Account Keys
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
