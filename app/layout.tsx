@@ -114,8 +114,28 @@ export default function RootLayout({
         
         <footer className="bg-white border-t mt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center text-gray-600">
-              <p>&copy; {new Date().getFullYear()} 미주뉴스. 미국주식과 코인 뉴스.</p>
+            <div className="text-center text-gray-600 space-y-4">
+              {/* 링크 메뉴 */}
+              <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
+                <a href="/terms" className="hover:text-blue-600 transition">
+                  이용약관
+                </a>
+                <span className="text-gray-300">|</span>
+                <a href="/privacy" className="hover:text-blue-600 transition">
+                  개인정보처리방침
+                </a>
+                <span className="text-gray-300">|</span>
+                <a href="mailto:trotradio@gmail.com" className="hover:text-blue-600 transition">
+                  Contact
+                </a>
+                <span className="text-gray-300">|</span>
+                <span>trotradio@gmail.com</span>
+              </div>
+              
+              {/* 저작권 */}
+              <p className="text-xs text-gray-500">
+                &copy; {new Date().getFullYear()} 미주뉴스. 미국주식과 코인 뉴스.
+              </p>
             </div>
           </div>
         </footer>
