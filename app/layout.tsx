@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   classification: 'News',
   manifest: '/manifest.json',
   other: {
-    'naver-site-verification': '3e4d9f5feb680d7e84ee0732d0bca8b07f97c364',
+    'naver-site-verification': 'fc3bdcc47ac6bfdd00e14524ecf39b588556a439',
   },
 };
 
