@@ -205,14 +205,14 @@ export default function HomePage() {
         </div>
 
         {/* 메인 히어로 영역 - 좌우 2단 구조 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4 items-start">
           {/* 왼쪽: 메인 기사 이미지 */}
           <div className="lg:col-span-1">
             <Link href={`/post?id=${mainPost.id}`}>
-              <article className="group">
+              <article className="group flex flex-col h-full">
                 {/* 메인 이미지 */}
-                {mainPost.imageUrl && (
-                  <div className="relative w-full h-[350px] mb-3 overflow-hidden">
+                <div className="relative w-full h-[350px] mb-3 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                  {mainPost.imageUrl ? (
                     <Image
                       src={mainPost.imageUrl}
                       alt={mainPost.title}
@@ -220,8 +220,10 @@ export default function HomePage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       priority
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="text-gray-400 text-sm">이미지 없음</div>
+                  )}
+                </div>
                 
                 {/* 제목 */}
                 <h3 className="text-3xl font-bold text-gray-900 mb-2 leading-snug group-hover:text-blue-600 transition">
@@ -259,18 +261,20 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
             {gridPosts.map((post) => (
               <Link key={post.id} href={`/post?id=${post.id}`}>
-                <article className="group">
+                <article className="group flex flex-col h-full">
                   {/* 이미지 */}
-                  {post.imageUrl && (
-                    <div className="relative w-full h-40 mb-2 overflow-hidden">
+                  <div className="relative w-full h-40 mb-2 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    {post.imageUrl ? (
                       <Image
                         src={post.imageUrl}
                         alt={post.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                    </div>
-                  )}
+                    ) : (
+                      <div className="text-gray-400 text-xs">이미지 없음</div>
+                    )}
+                  </div>
                   
                   {/* 제목 */}
                   <h4 className="text-base font-bold text-gray-900 mb-1.5 leading-snug line-clamp-2 group-hover:text-blue-600 transition">
