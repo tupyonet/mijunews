@@ -188,9 +188,9 @@ export default function HomePage() {
     const gridPosts = posts.slice(5, 11);
 
     return (
-      <section className="mb-10">
+      <section className="mb-8">
         {/* 섹션 제목 - 동아일보 스타일 */}
-        <div className="border-b-4 border-gray-900 mb-4 pb-2 flex items-center justify-between">
+        <div className="border-b-4 border-gray-900 mb-3 pb-2 flex items-center justify-between">
           <h2 className="text-3xl font-black text-gray-900">
             {emoji} {title}
           </h2>
@@ -205,7 +205,7 @@ export default function HomePage() {
         </div>
 
         {/* 메인 히어로 영역 - 좌우 2단 구조 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
           {/* 왼쪽: 메인 기사 이미지 */}
           <div className="lg:col-span-1">
             <Link href={`/post?id=${mainPost.id}`}>
@@ -256,7 +256,7 @@ export default function HomePage() {
 
         {/* 3단 그리드 기사 - 동아일보 스타일 */}
         {gridPosts.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-5 border-t border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
             {gridPosts.map((post) => (
               <Link key={post.id} href={`/post?id=${post.id}`}>
                 <article className="group">
@@ -299,9 +299,9 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         {/* 상단 광고 */}
-        <div className="mb-5">
+        <div className="mb-3">
           <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
         </div>
 
@@ -310,7 +310,7 @@ export default function HomePage() {
 
         {/* 중간 광고 */}
         {!category && usStockPosts.length > 0 && coinPosts.length > 0 && (
-          <div className="my-6">
+          <div className="my-4">
             <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
           </div>
         )}
@@ -319,7 +319,7 @@ export default function HomePage() {
         {coinPosts.length > 0 && renderSection(coinPosts, '코인', '₿', '/?category=코인')}
 
         {/* 하단 광고 */}
-        <div className="mt-6">
+        <div className="mt-4">
           <AdSense adClient="ca-pub-3280756983507658" adSlot="2272898322" adFormat="horizontal" />
         </div>
       </div>
