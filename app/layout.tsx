@@ -6,14 +6,19 @@ import TradingViewTicker from './components/TradingViewTicker';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tupyo-net.web.app'),
+  metadataBase: new URL('https://mijunews-ec404.web.app'),
   title: {
-    default: '미주뉴스 - 미국주식과 코인 뉴스',
+    default: '미주뉴스 - 미국주식과 코인 뉴스 | 실시간 시세 및 투자 정보',
     template: '%s | 미주뉴스',
   },
-  description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 정보를 확인하세요',
-  keywords: ['미국주식', '미국증시', '뉴스', '코인', '암호화폐', '비트코인', '이더리움', '나스닥', 'S&P500', '다우존스', '주식투자', '가상화폐'],
-  authors: [{ name: '미주뉴스', url: 'https://tupyo-net.web.app' }],
+  description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 실시간 시세 정보를 제공합니다. 나스닥, S&P500, 다우존스, 비트코인, 이더리움 등 주요 지수와 암호화폐 시세를 확인하세요.',
+  keywords: [
+    '미국주식', '미국증시', '나스닥', 'S&P500', '다우존스', 'QQQ', 'SPY',
+    '코인', '암호화폐', '비트코인', 'BTC', '이더리움', 'ETH', '솔라나', 'SOL',
+    '주식투자', '가상화폐', '블록체인', '디지털자산', '투자정보', '금융뉴스',
+    '실시간시세', '주식시세', '코인시세', '암호화폐뉴스', '미국주식뉴스'
+  ],
+  authors: [{ name: '미주뉴스', url: 'https://mijunews-ec404.web.app' }],
   creator: '미주뉴스',
   publisher: '미주뉴스',
   formatDetection: {
@@ -35,13 +40,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ko_KR',
-    url: 'https://tupyo-net.web.app',
+    url: 'https://mijunews-ec404.web.app',
     siteName: '미주뉴스',
-    title: '미주뉴스 - 미국주식과 코인 뉴스',
-    description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 정보를 확인하세요',
+    title: '미주뉴스 - 미국주식과 코인 뉴스 | 실시간 시세 및 투자 정보',
+    description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 실시간 시세 정보를 제공합니다. 나스닥, S&P500, 다우존스, 비트코인, 이더리움 등 주요 지수와 암호화폐 시세를 확인하세요.',
     images: [
       {
-        url: '/og-image.png',
+        url: 'https://mijunews-ec404.web.app/logo.png',
         width: 1200,
         height: 630,
         alt: '미주뉴스 - 미국주식과 코인 뉴스',
@@ -50,17 +55,19 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '미주뉴스 - 미국주식과 코인 뉴스',
-    description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 정보를 확인하세요',
-    images: ['/og-image.png'],
+    title: '미주뉴스 - 미국주식과 코인 뉴스 | 실시간 시세 및 투자 정보',
+    description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 실시간 시세 정보를 제공합니다.',
+    images: ['https://mijunews-ec404.web.app/logo.png'],
     creator: '@mijunews',
   },
   verification: {
     google: 'gvt7PPYCSbSdW6Ma6VaNeCVsH7eaqv4qaaEq88J2R94',
   },
   alternates: {
-    canonical: 'https://tupyo-net.web.app',
+    canonical: 'https://mijunews-ec404.web.app',
   },
+  category: 'Finance',
+  classification: 'News',
   manifest: '/manifest.json',
   other: {
     'naver-site-verification': '3e4d9f5feb680d7e84ee0732d0bca8b07f97c364',
@@ -74,6 +81,54 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        {/* 구조화된 데이터 - Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'NewsMediaOrganization',
+              name: '미주뉴스',
+              url: 'https://mijunews-ec404.web.app',
+              logo: 'https://mijunews-ec404.web.app/logo.png',
+              description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 실시간 시세 정보를 제공하는 뉴스 미디어',
+              sameAs: [],
+              contactPoint: {
+                '@type': 'ContactPoint',
+                email: 'trotradio@gmail.com',
+                contactType: 'customer service',
+              },
+            }),
+          }}
+        />
+        {/* 구조화된 데이터 - WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: '미주뉴스',
+              url: 'https://mijunews-ec404.web.app',
+              description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 실시간 시세 정보',
+              publisher: {
+                '@type': 'Organization',
+                name: '미주뉴스',
+                logo: {
+                  '@type': 'ImageObject',
+                  url: 'https://mijunews-ec404.web.app/logo.png',
+                },
+              },
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: 'https://mijunews-ec404.web.app/?search={search_term_string}',
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
+        />
+      </head>
       <body className="antialiased bg-gray-50">
         <GoogleAnalytics />
         <AdSenseScript />

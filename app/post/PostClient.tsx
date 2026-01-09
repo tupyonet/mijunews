@@ -89,7 +89,7 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
   // 주소 복사하기
   const handleCopyUrl = async () => {
     try {
-      const url = `https://tupyo-net.web.app/post?id=${postId}`;
+      const url = `https://mijunews-ec404.web.app/post?id=${postId}`;
       await navigator.clipboard.writeText(url);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
@@ -119,7 +119,7 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
       if (ogTitle) ogTitle.setAttribute('content', post.title);
       if (ogDescription) ogDescription.setAttribute('content', description);
       if (ogImage && post.imageUrl) ogImage.setAttribute('content', post.imageUrl);
-      if (ogUrl) ogUrl.setAttribute('content', `https://tupyo-net.web.app/post?id=${postId}`);
+      if (ogUrl) ogUrl.setAttribute('content', `https://mijunews-ec404.web.app/post?id=${postId}`);
       
       // Twitter 태그
       const twitterTitle = document.querySelector('meta[name="twitter:title"]');
@@ -295,20 +295,20 @@ export default function PostClient({ postId: initialPostId }: { postId: string }
     author: {
       '@type': 'Organization',
       name: '미주뉴스',
-      url: 'https://tupyo-net.web.app',
+      url: 'https://mijunews-ec404.web.app',
     },
     publisher: {
       '@type': 'Organization',
       name: '미주뉴스',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://tupyo-net.web.app/logo.png',
+        url: 'https://mijunews-ec404.web.app/logo.png',
       },
     },
     description: post.content.substring(0, 160).replace(/[#*`\[\]]/g, '').trim(),
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://tupyo-net.web.app/post?id=${postId}`,
+      '@id': `https://mijunews-ec404.web.app/post?id=${postId}`,
     },
     articleSection: post.category || '종합',
     keywords: post.keywords.join(', '),

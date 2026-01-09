@@ -149,15 +149,20 @@ export default function HomePage() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: '미주뉴스 - 미국주식과 코인 뉴스',
-    url: 'https://tupyo-net.web.app',
-    description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 정보',
+    url: 'https://mijunews-ec404.web.app',
+    description: '미국주식, 암호화폐, 코인 관련 최신 뉴스와 실시간 시세 정보',
     publisher: {
       '@type': 'Organization',
       name: '미주뉴스',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://tupyo-net.web.app/logo.png',
+        url: 'https://mijunews-ec404.web.app/logo.png',
       },
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://mijunews-ec404.web.app/?search={search_term_string}',
+      'query-input': 'required name=search_term_string',
     },
   };
 

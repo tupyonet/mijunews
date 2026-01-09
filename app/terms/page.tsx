@@ -3,7 +3,16 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: '이용약관 | 미주뉴스',
-  description: '미주뉴스 이용약관',
+  description: '미주뉴스 서비스 이용약관입니다. 서비스 이용과 관련된 권리, 의무 및 책임사항을 확인하세요.',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: '이용약관 | 미주뉴스',
+    description: '미주뉴스 서비스 이용약관',
+    url: 'https://mijunews-ec404.web.app/terms',
+  },
 };
 
 export default function TermsPage() {

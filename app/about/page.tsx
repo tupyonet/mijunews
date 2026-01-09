@@ -2,7 +2,13 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: '소개 | 미주뉴스',
-  description: '미주뉴스는 미국주식과 코인 뉴스를 제공하는 미디어 플랫폼입니다.',
+  description: '미주뉴스는 미국주식과 암호화폐(코인) 관련 최신 뉴스와 인사이트를 제공하는 미디어 플랫폼입니다. 나스닥, S&P500, 비트코인, 이더리움 등 주요 투자 정보를 제공합니다.',
+  keywords: ['미주뉴스', '미국주식', '코인', '암호화폐', '투자정보', '금융뉴스', '주식뉴스'],
+  openGraph: {
+    title: '소개 | 미주뉴스',
+    description: '미주뉴스는 미국주식과 암호화폐(코인) 관련 최신 뉴스와 인사이트를 제공하는 미디어 플랫폼입니다.',
+    url: 'https://mijunews-ec404.web.app/about',
+  },
 };
 
 export default function AboutPage() {

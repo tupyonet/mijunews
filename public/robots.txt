@@ -1,15 +1,24 @@
-# robots.txt for tupyo-net.web.app
+# robots.txt for mijunews-ec404.web.app
 
 User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://tupyo-net.web.app/sitemap.xml
+Sitemap: https://mijunews-ec404.web.app/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1
 
 # Disallow admin areas if any
 Disallow: /api/
+Disallow: /_next/
+Disallow: /out/
+
+# Allow important pages
+Allow: /
+Allow: /about
+Allow: /terms
+Allow: /privacy
+Allow: /post
 
 

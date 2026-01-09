@@ -3,7 +3,16 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: '개인정보처리방침 | 미주뉴스',
-  description: '미주뉴스 개인정보처리방침',
+  description: '미주뉴스 개인정보처리방침입니다. 개인정보의 수집, 이용, 보관, 파기 등에 대한 내용을 확인하세요.',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: '개인정보처리방침 | 미주뉴스',
+    description: '미주뉴스 개인정보처리방침',
+    url: 'https://mijunews-ec404.web.app/privacy',
+  },
 };
 
 export default function PrivacyPage() {
